@@ -1,57 +1,25 @@
-name: ML CI/CD Pipeline
-
+name: Continuous Integration
 on:
   push:
-    branches: [main]
+    branches: [ "main" ]
   pull_request:
-    branches: [main]
-
+    branches: [ "main" ]
+  workflow_dispatch:
+  
+permissions: write-all
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'  # ✅ Correct and available version
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Lint with flake8
-        run: |
-          pip install flake8
-          flake8 .
-
-      - name: Run tests with pytest
-        run: |
-          pip install pytest
-          pytest tests/
-
-  train-model:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-
-      - name: Run training script
-        run: |
-          python train.py
+      - uses: actions/checkout@v3
+      - uses: iterative/setup-cml@v2
+      - name: Install Packages
+        run: make install
+      - name: Format
+        run: make format
+      - name: Train
+        run: make train
+      - name: Evaluation
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: make eval
