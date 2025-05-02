@@ -1,6 +1,8 @@
-numpy
 pandas
-scikit-learn
+numpy
 matplotlib
-pytest
-black
+seaborn
+scikit-learn
+xgboost
+jupyter
+nbconvert
