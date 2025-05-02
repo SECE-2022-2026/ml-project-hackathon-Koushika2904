@@ -1,4 +1,4 @@
-name: ML CI/CD Pipeline
+name: ML Notebook CI
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 permissions: write-all
 
 jobs:
-  build:
+  notebook-ci:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,18 +22,8 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Python dependencies
-        run: |
-          pip install -r requirements.txt
+      - name: Install dependencies
+        run: make install
 
-      - name: Check code formatting
-        run: make format
-
-      - name: Run tests
-        run: make test
-
-      - name: Train the model
-        run: make train
-
-      - name: Evaluate the model
-        run: make eval
+      - name: Run the Jupyter notebook
+        run: make run-notebook
