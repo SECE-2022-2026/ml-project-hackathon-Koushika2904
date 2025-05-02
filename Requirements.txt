@@ -1,0 +1,15 @@
+install:
+	pip install -r requirements.txt
+
+format:
+	black . --check
+
+test:
+	pytest tests/
+
+train:
+	python train.py
+
+eval:
+	python evaluate.py > metrics.txt
+	cml comment create metrics.txt
